@@ -1,0 +1,126 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container py-5">
+  <!-- En-tête de page -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <h1 class="display-5 fw-bold text-dark mb-3">Catalogue des produits</h1>
+      <p class="lead text-muted">Découvrez notre sélection exclusive de produits de qualité</p>
+    </div>
+  </div>
+
+  <!-- Grille des produits -->
+  <div class="row g-4">
+    {% for product in products %}
+    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+      <div class="card h-100 border-0 shadow-sm product-card">
+        <!-- Image du produit -->
+        <div class="position-relative">
+          {% if product.image %}
+          <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
+          {% else %}
+          <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+            <div class="text-center text-muted">
+              <i class="fas fa-image fa-3x mb-2"></i>
+              <p class="small mb-0">Aucune image disponible</p>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Contenu de la carte -->
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title fw-bold text-dark mb-2">{{ product.name }}</h5>
+          <p class="card-text text-muted flex-grow-1">{{ product.description|truncatechars:100 }}</p>
+          
+          <div class="mt-auto">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="h5 fw-bold text-primary mb-0">{{ product.price }} FCFA</span>
+            </div>
+            <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary w-100">
+              <i class="fas fa-eye me-2"></i>Voir le produit
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <!-- État vide -->
+    <div class="col-12 text-center py-5">
+      <div class="text-muted">
+        <i class="fas fa-box-open fa-4x mb-3"></i>
+        <h4 class="fw-bold">Aucun produit disponible</h4>
+        <p class="mb-0">Revenez bientôt pour découvrir nos nouveautés</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Styles personnalisés -->
+<style>
+.product-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-img-top {
+  border-radius: 12px 12px 0 0;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .display-5 {
+    font-size: 2rem;
+  }
+  
+  .col-md-6 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .product-card {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .card-body {
+    padding: 1.25rem;
+  }
+}
+</style>
+{% endblock %}

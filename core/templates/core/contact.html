@@ -1,0 +1,34 @@
+{% extends 'core/base.html' %}
+{% block title %}Nous contacter - BoutiquePremium{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow p-4">
+    <h2 class="text-center text-primary mb-4"><i class="bi bi-envelope-fill"></i> Nous contacter</h2>
+
+    <p class="text-center mb-4">
+      Vous avez une question, une suggestion ou un problème ? N’hésitez pas à nous écrire !
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="name" class="form-label">Votre nom</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="Entrez votre nom" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Votre email</label>
+        <input type="email" id="email" name="email" class="form-control" placeholder="Entrez votre adresse email" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="message" class="form-label">Votre message</label>
+        <textarea id="message" name="message" rows="4" class="form-control" placeholder="Écrivez votre message ici..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Envoyer le message</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

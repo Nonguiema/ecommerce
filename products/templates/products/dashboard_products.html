@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+{% block title %}Produits vendus{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h3>📦 Produits disponibles</h3>
+  <ul class="list-group mt-3">
+    {% for product in products %}
+      <li class="list-group-item d-flex justify-content-between">
+        <span>{{ product.name }}</span>
+        <span>{{ product.price }} FCFA</span>
+      </li>
+    {% empty %}
+      <li class="list-group-item text-center text-muted">Aucun produit</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

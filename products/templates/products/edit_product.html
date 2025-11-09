@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow p-4">
+    <h2 class="text-center mb-4">
+      ✏️ Modifier le produit : <strong>{{ product.name }}</strong>
+    </h2>
+
+    <form method="POST" enctype="multipart/form-data" class="mt-3">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="id_name" class="form-label">Nom du produit</label>
+          {{ form.name }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="id_price" class="form-label">Prix</label>
+          {{ form.price }}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label for="id_description" class="form-label">Description</label>
+          {{ form.description }}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="id_image" class="form-label">Image du produit</label>
+          {{ form.image }}
+        </div>
+      </div>
+<div class="mb-3">
+      <label class="form-label">Stock disponible</label>
+      {{ form.stock }}  <!-- ✅ Nouveau champ -->
+    </div>
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-success px-4">
+          💾 Enregistrer les modifications
+        </button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4">↩️ Retour</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

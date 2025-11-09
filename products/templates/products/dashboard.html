@@ -1,0 +1,215 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Tableau de bord du gérant{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">🧭 Tableau de bord du gérant</h2>
+
+  <!-- Liens rapides -->
+  <div class="row mb-4 text-center">
+    <div class="col-md-3">
+      <a href="{% url 'dashboard_users' %}" class="text-decoration-none text-dark">
+        <div class="card shadow-sm p-3 hover-card">
+          <h5>👥 Utilisateurs</h5>
+          <h3>{{ nombre_clients }}</h3>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-3">
+      <a href="{% url 'dashboard_orders' %}" class="text-decoration-none text-dark">
+        <div class="card shadow-sm p-3 hover-card">
+          <h5>🛒 Commandes</h5>
+          <h3>{{ nombre_commandes }}</h3>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-3">
+      <a href="{% url 'dashboard_products' %}" class="text-decoration-none text-dark">
+        <div class="card shadow-sm p-3 hover-card">
+          <h5>📦 Produits vendus</h5>
+          <h3>{{ produits_vendus }}</h3>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-3">
+      <a href="{% url 'dashboard_sales' %}" class="text-decoration-none text-dark">
+        <div class="card shadow-sm p-3 hover-card">
+          <h5>💰 Chiffre d'affaires</h5>
+          <h3>{{ total_ventes }} FCFA</h3>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <style>
+    .hover-card {
+      transition: 0.3s;
+      border-radius: 12px;
+    }
+    .hover-card:hover {
+      transform: scale(1.05);
+      background-color: #f8f9fa;
+    }
+  </style>
+
+  <!-- Ajouter un produit -->
+  <div class="card p-4 mb-4 shadow-sm">
+    <h4>➕ Ajouter un produit</h4>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" name="add_product" class="btn btn-primary">Ajouter le produit</button>
+    </form>
+  </div>
+
+  <!-- Liste des produits -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">Liste des produits</h4>
+      <span class="badge bg-primary">{{ products|length }} produit(s)</span>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Image</th>
+              <th>Nom</th>
+              <th>Prix</th>
+              <th>Stock</th>
+              <th>Statut</th>
+              <th width="150">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in products %}
+            <tr>
+              <td>
+                {% if product.image %}
+                  <img src="{{ product.image.url }}" width="60" height="60" class="rounded" alt="{{ product.name }}">
+                {% else %}
+                  <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <span class="text-muted">Aucune image</span>
+                  </div>
+                {% endif %}
+              </td>
+              <td>
+                <div class="fw-bold">{{ product.name }}</div>
+                {% if product.description %}
+                  <small class="text-muted">{{ product.description|truncatewords:5 }}</small>
+                {% endif %}
+              </td>
+              <td>
+                <span class="fw-bold">{{ product.price }} FCFA</span>
+              </td>
+              <td>
+                <span class="badge {% if product.stock > 10 %}bg-success{% elif product.stock > 0 %}bg-warning{% else %}bg-danger{% endif %}">
+                  {{ product.stock }} unité(s)
+                </span>
+              </td>
+              <td>
+                {% if product.stock > 0 %}
+                  <span class="badge bg-success">En stock</span>
+                {% else %}
+                  <span class="badge bg-danger">Rupture</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="btn-group" role="group">
+                  <a href="{% url 'edit_product' product.id %}" class="btn btn-warning btn-sm">Modifier</a>
+                  <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ product.id }}" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+
+                <!-- Modal suppression -->
+                <div class="modal fade" id="deleteModal{{ product.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ product.id }}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel{{ product.id }}">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        Êtes-vous sûr de vouloir supprimer le produit <strong>"{{ product.name }}"</strong> ? Cette action est irréversible.
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <form method="POST" action="{% url 'delete_product' product.id %}" class="d-inline">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center py-4">
+                <div class="text-muted">
+                  <i class="fas fa-box-open fa-2x mb-2"></i>
+                  <p>Aucun produit enregistré</p>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste des commandes -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-light">
+      <h4 class="mb-0">Commandes récentes</h4>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Utilisateur</th>
+              <th>Date</th>
+              <th>Total</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <td><span class="fw-bold">#{{ order.id }}</span></td>
+              <td>{{ order.user.username }}</td>
+              <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+              <td><span class="fw-bold text-success">{{ order.total }} FCFA</span></td>
+              <td>
+                <a href="{% url 'order_details' order.id %}" class="btn btn-sm btn-outline-primary">
+                  <i class="fas fa-eye"></i> Détails
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center py-4">
+                <div class="text-muted">
+                  <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                  <p>Aucune commande</p>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Icônes Font Awesome -->
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+
+</div> <!-- fin container -->
+{% endblock %}

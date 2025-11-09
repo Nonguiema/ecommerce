@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% block title %}Liste des utilisateurs{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4"><i class="bi bi-people-fill text-primary"></i> Liste des utilisateurs</h2>
+
+  <table class="table table-bordered table-hover align-middle shadow-sm">
+    <thead class="table-dark text-center">
+      <tr>
+        <th scope="col">Nom d’utilisateur</th>
+        <th scope="col">Email</th>
+        <th scope="col">Téléphone</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>
+            {% if user.email %}
+              {{ user.email }}
+            {% else %}
+              <span class="text-muted">Non renseigné</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if user.profile.phone %}
+              {{ user.profile.phone }}
+            {% else %}
+              <span class="text-muted">Non renseigné</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3" class="text-center text-muted py-3">
+            Aucun utilisateur trouvé.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

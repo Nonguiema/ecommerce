@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Accueil - BoutiquePremium{% endblock %}</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #2c5aa0;
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      border: none;
+      border-radius: 30px;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .hero-section {
+      background: var(--gradient);
+      color: white;
+      padding: 100px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ✅ NAVIGATION -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top py-3">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <i class="bi bi-bag-check-fill me-2"></i>BoutiquePremium
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'product_list' %}">Produits</a></li>
+
+        <!-- ✅ Liens ajoutés -->
+        <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">À propos</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Nous contacter</a></li>
+      </ul>
+
+      <div class="d-flex align-items-center">
+        {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="btn btn-outline-light me-2">Déconnexion</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-success me-2">Connexion</a>
+          <a href="{% url 'register' %}" class="btn btn-primary">Inscription</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ✅ SECTION PRINCIPALE -->
+<section class="hero-section text-center">
+  <div class="container">
+    <h1 class="display-4 fw-bold mb-3">Bienvenue sur BoutiquePremium</h1>
+    <p class="lead mb-4">Découvrez nos produits de qualité et profitez des meilleures offres du moment.</p>
+
+    {% if user.is_authenticated %}
+      <a href="{% url 'product_list' %}" class="btn btn-light btn-lg">Explorer les produits</a>
+    {% else %}
+      <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg me-2">Créer un compte</a>
+      <a href="{% url 'login' %}" class="btn btn-light btn-lg">Se connecter</a>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ✅ CONTENU SPÉCIFIQUE DES PAGES -->
+<div class="container mt-5">
+  {% block content %}
+  {% endblock %}
+</div>
+
+<!-- ✅ FOOTER -->
+<footer class="bg-dark text-light text-center py-4 mt-5">
+  <p>&copy; 2025 BoutiquePremium - Tous droits réservés</p>
+  <p class="mb-0">
+    <a href="{% url 'about' %}" class="text-light text-decoration-none me-3">À propos</a> |
+    <a href="{% url 'contact' %}" class="text-light text-decoration-none ms-3">Nous contacter</a>
+  </p>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

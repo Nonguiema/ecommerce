@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+{% block title %}Commandes - Tableau de bord{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h3>🛒 Commandes</h3>
+  <table class="table table-striped mt-3">
+    <thead><tr><th>ID</th><th>Client</th><th>Date</th><th>Total (FCFA)</th></tr></thead>
+    <tbody>
+      {% for order in orders %}
+        <tr>
+          <td>#{{ order.id }}</td>
+          <td>{{ order.user.username }}</td>
+          <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+          <td>{{ order.total }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="text-center text-muted">Aucune commande</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
